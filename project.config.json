@@ -9,7 +9,7 @@
 	},
 	"miniprogramRoot": "dist/wx/",
 	"compileType": "miniprogram",
-	"appid": "touristappid",
+	"appid": "wx6a4b41db00b78759",
 	"projectname": "share-book",
 	"condition": {
 		"search": {
