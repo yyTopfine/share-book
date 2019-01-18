@@ -7,7 +7,8 @@
 		"minified": true,
 		"newFeature": true
 	},
-	"miniprogramRoot": "dist/wx/",
+  "cloudfunctionRoot": "./cloudFunctions/",
+  "miniprogramRoot": "dist/wx/",
 	"compileType": "miniprogram",
 	"appid": "wx6a4b41db00b78759",
 	"projectname": "share-book",

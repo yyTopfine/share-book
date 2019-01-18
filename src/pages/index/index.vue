@@ -1,8 +1,11 @@
 <template>
   <div class="homePgeContainer">
-    <p class="homePgeContainer_title">骏梦游戏</p>
-    <p class="homePgeContainer_subTitle">员工图书馆</p>
-    <i-button type="error">这是一个按钮</i-button>
+    <div class="homePgeContainer_bookContainer" @click="goBookDetail">
+      <div class="homePgeContainer_content_bookItem" v-for="item in bookList" :key="id">{{item.name}}</div>
+      <div class="homePgeContainer_content_bookItem">
+        <i-icon type="add" size="28" class="homePgeContainer_content_bookItem--icon"/>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -11,7 +14,9 @@
 export default {
   data () {
     return {
-      userInfo: {}
+      userInfo: {},
+      current: 'homepage',
+      bookList: []
     }
   },
 
@@ -30,28 +35,43 @@ export default {
           })
         }
       })
+    },
+    goBookDetail () {
+      wx.navigateTo({
+        url: '../book/main'
+      })
     }
-  },
-
-  created () {
-    // 调用应用实例的方法获取全局数据
-    this.getUserInfo()
   }
 }
 </script>
 
 <style scoped>
-  .homePgeContainer_title{
-    letter-spacing: 20px;
-    font-size: 26px;
-    font-weight: bolder;
-    text-align: center;
+  .homePgeContainer{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
 
-  .homePgeContainer_subTitle{
-    letter-spacing: 10px;
-    font-size: 16px;
-    font-weight: bolder;
+  .homePgeContainer_bookContainer{
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    overflow-y: scroll;
+    align-content: flex-start;
+  }
+
+  .homePgeContainer_content_bookItem{
+    width: 26%;
+    height: 26%;
+    margin-top: 5.5%;
+    background-color: gainsboro;
+    margin-left: 5.5%;
+  }
+
+  .homePgeContainer_content_bookItem--icon{
+    display: block;
     text-align: center;
+    margin-top: 60%;
   }
 </style>

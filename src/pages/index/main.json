@@ -1,5 +1,6 @@
 {
+  "navigationBarTitleText": "书架",
   "usingComponents": {
-    "i-button": "../../../static/iView/button/index"
+    "i-icon": "../../../static/iView/icon/index"
   }
 }

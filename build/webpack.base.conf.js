@@ -9,6 +9,7 @@ var MpvuePlugin = require('webpack-mpvue-asset-plugin')
 var glob = require('glob')
 var CopyWebpackPlugin = require('copy-webpack-plugin')
 var relative = require('relative')
+var CleanWebpackPlugin = require('clean-webpack-plugin')
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
@@ -106,6 +107,7 @@ let baseWebpackConfig = {
     ]
   },
   plugins: [
+    new CleanWebpackPlugin(['../dist/wx']),
     // api 统一桥协议方案
     new webpack.DefinePlugin({
       'mpvue': 'global.mpvue',

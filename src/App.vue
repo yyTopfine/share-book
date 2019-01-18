@@ -7,6 +7,10 @@ export default {
     wx.setStorageSync('logs', logs)
 
     console.log('app created and cache logs by setStorageSync')
+
+    wx.cloud.init({
+      env: 'share-book-dff74a'
+    })
   }
 }
 </script>
@@ -27,5 +31,8 @@ export default {
   -moz-transition: width 2s;
   -webkit-transition: width 2s;
   -o-transition: width 2s;
+}
+page{
+  height: 100%;
 }
 </style>

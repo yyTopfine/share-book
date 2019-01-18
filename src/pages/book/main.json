@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "i-button": "../../../static/iView/button/index"
+  },
+  "navigationBarTitleText": "书籍介绍"
+}
