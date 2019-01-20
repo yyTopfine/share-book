@@ -7,10 +7,6 @@ export default {
     wx.setStorageSync('logs', logs)
 
     console.log('app created and cache logs by setStorageSync')
-
-    wx.cloud.init({
-      env: 'share-book-dff74a'
-    })
   }
 }
 </script>

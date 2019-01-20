@@ -1,7 +1,8 @@
 {
   "usingComponents": {
     "i-cell-group": "../../../static/iView/cell-group/index",
-    "i-cell": "../../../static/iView/cell/index"
+    "i-cell": "../../../static/iView/cell/index",
+    "i-card": "../../../static/iView/card/index"
   },
   "navigationBarTitleText": "我的"
 }

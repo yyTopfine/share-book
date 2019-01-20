@@ -4,7 +4,7 @@
     "pages/logs/main",
     "pages/mine/main",
     "pages/book/main",
-    "pages/counter/main"
+    "pages/addBook/main"
   ],
   "window": {
     "backgroundTextStyle": "light",

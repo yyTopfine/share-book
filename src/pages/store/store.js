@@ -7,16 +7,18 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
-    count: 0
+    openId: '',
+    userInfo: {},
+    db: wx.cloud.database()
   },
   mutations: {
-    increment: (state) => {
+    setOpenId: (state, id) => {
       const obj = state
-      obj.count += 1
+      obj.openId = id
     },
-    decrement: (state) => {
+    setUserInfo: (state, Obj) => {
       const obj = state
-      obj.count -= 1
+      obj.userInfo = Obj
     }
   }
 })

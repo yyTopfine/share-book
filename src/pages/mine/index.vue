@@ -1,10 +1,7 @@
 <template>
   <div class="mineContainer">
-    <div class="mineContainer_userInfo">
-      <img src="../../../static/img/homeSelect.jpg" class="mineContainer_userInfo_icon">
-      <div class="mineContainer_userInfo_name">张三</div>
-    </div>
-    <div style="height: 10px;background-color: gainsboro"></div>
+    <i-card :title="userInfo.nickName" i-class="mineContainer_i-card" full=true :thumb="userInfo.avatarUrl">
+    </i-card>
     <i-cell-group class="mineContainer_list">
       <i-cell title="我的图书" is-link></i-cell>
     </i-cell-group>
@@ -12,51 +9,40 @@
 </template>
 
 <script>
-
+import store from '../store/store'
 export default {
   data () {
     return {
-      userInfo: {},
-      current: 'mine'
+      userInfo: {}
     }
   },
-
+  created () {
+    let _this = this
+    setTimeout(function () {
+      store.state.db.collection('shareBook-user').where({openId: store.state.openId}).get().then(res => {
+        console.log('sssss11', res.data)
+        _this.userInfo = res.data[0]
+      })
+    }, 1500)
+  },
   components: {
   },
 
   methods: {
-    handleChange (event) {
-      wx.reLaunch({
-        url: '../index/main'
-      })
-    }
   }
 }
 </script>
 
-<style scoped>
+<style>
   .mineContainer{
     height: 100%;
   }
 
-  .mineContainer_userInfo{
-    height: 50px;
-    padding: 5px 0px;
-    background-color: white;
-    display: flex;
+  .mineContainer_i-card{
+    border-top: 0px!important;
+    padding: 0px!important;
   }
-
-  .mineContainer_userInfo_icon{
-    display: block;
-    width: 50px;
-    height: 100%;
-    margin-left: 20px;
-  }
-  .mineContainer_userInfo_name{
-    height: 100%;
-    line-height: 50px;
-    font-size: 18px;
-    font-weight: bolder;
-    padding-left: 10px;
+  .mineContainer_i-card view{
+    margin: 6px 10px;
   }
 </style>

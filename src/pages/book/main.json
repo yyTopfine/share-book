@@ -1,6 +1,9 @@
 {
   "usingComponents": {
-    "i-button": "../../../static/iView/button/index"
+    "i-button": "../../../static/iView/button/index",
+    "i-sticky": "../../../static/iView/sticky/index",
+    "i-sticky-item": "../../../static/iView/sticky-item/index",
+    "i-toast": "../../../static/iView/toast/index"
   },
-  "navigationBarTitleText": "书籍介绍"
+  "navigationBarTitleText": "书籍详情"
 }

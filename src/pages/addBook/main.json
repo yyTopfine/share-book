@@ -1,0 +1,8 @@
+{
+  "usingComponents": {
+    "i-button": "../../../static/iView/button/index",
+    "i-input": "../../../static/iView/input/index",
+    "i-toast": "../../../static/iView/toast/index"
+  },
+  "navigationBarTitleText": "书籍添加"
+}
