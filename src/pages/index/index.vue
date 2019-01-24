@@ -8,32 +8,29 @@
         <i-icon type="add" size="28" class="homePgeContainer_content_bookItem--icon"/>
       </div>
     </div>
-    <i-modal title="登录确认" :visible="visibleLogin" @ok="loginOk" @cancel = "loginCancel" >
-      <view>登录后即可添加图书</view>
-    </i-modal>
-    <i-modal title="用户信息权限获取申请" :visible="askUserInfo" :show-ok=false @cancel = "askUserInfo = false" >
-      <button  open-type="getUserInfo" @click="authorOk" style="width: 80%;margin: 0 auto;background-color: lightblue">点我授权</button>
-    </i-modal>
-    <i-toast id="toast" />
+    <Login @authorizeSuccess = 'authorizeSuccess' v-if="showLoginComponen" :visibleLogin = 'isAuthorize'></Login>
   </div>
 </template>
 
 <script>
 import store from '../store/store'
-const { $Toast } = require('../../../static/iView/base/index')
+import login from '../../components/login'
 export default {
   data () {
     return {
       current: 'homepage',
       bookList: [],
       visibleLogin: false,
-      askUserInfo: false
+      askUserInfo: false,
+      showLoginComponen: false,
+      hasRegister: false
     }
   },
 
   components: {
+    login
   },
-  created () {
+  onShow () {
     let _this = this
     // 调用云函数，返回用户openId，参数为云函数名称
     wx.cloud.callFunction({ name: 'getOpenId' }).then(res => {
@@ -47,78 +44,32 @@ export default {
   },
 
   methods: {
-    getUserInfo () {
-      wx.getUserInfo({
-        success: (res) => {
-          store.commit('setUserInfo', res.userInfo)
-        }
-      })
-    },
-    authorOk () {
-      this.askUserInfo = false
-    },
     goBookDetail (id) {
       wx.navigateTo({
         url: '../book/main?id=' + id
       })
     },
-    loginCancel () {
-      this.visibleLogin = false
-    },
-    loginOk () {
-      this.visibleLogin = false
-      store.state.db.collection('shareBook-user').add({
-        // data 字段表示需新增的 JSON 数据
-        data: {
-          openId: store.state.openId,
-          nickName: store.state.userInfo.nickName,
-          avatarUrl: store.state.userInfo.avatarUrl
-        }
-      }).then(res => {
-        $Toast({
-          content: '登录成功',
-          type: 'success',
-          selector: '#toast'
-        })
-      })
-    },
     addBook () {
-      let userRecord = []
       let _this = this
+      // 判断用户是否注册过，没注册过需要检测是否授权获取用户信息，供后续登录使用
       store.state.db.collection('shareBook-user').where({openId: store.state.openId}).get().then(res => {
-        console.log('查询', res.data)
-        userRecord = res.data
-        wx.getSetting({
-          success (res) {
-            if (!res.authSetting['scope.userInfo']) {
-              wx.authorize({
-                scope: 'scope.userInfo',
-                success () {
-                  if (userRecord.length === 0) {
-                    _this.visibleLogin = true
-                    _this.getUserInfo()
-                  } else {
-                    wx.navigateTo({
-                      url: '../addBook/main'
-                    })
-                  }
-                },
-                fail () {
-                  _this.askUserInfo = true
-                }
-              })
-            } else {
-              if (userRecord.length === 0) {
+        _this.hasRegister = res.data.length !== 0
+        if (!_this.hasRegister) { // 未注册
+          wx.getSetting({
+            success (res) {
+              _this.showLoginComponen = true
+              if (!res.authSetting['scope.userInfo']) { // 未授权
+                _this.visibleLogin = false
+              } else { // 已授权（未注册即未登录）
                 _this.visibleLogin = true
-                _this.getUserInfo()
-              } else {
-                wx.navigateTo({
-                  url: '../addBook/main'
-                })
               }
             }
-          }
-        })
+          })
+        } else { //  已注册（即登录）
+          wx.navigateTo({
+            url: '../addBook/main'
+          })
+        }
       })
     }
   }

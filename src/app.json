@@ -12,20 +12,24 @@
     "navigationBarTitleText": "WeChat",
     "navigationBarTextStyle": "black"
   },
+  "usingComponents": {
+    "i-icon": "../../../static/iView/icon/index",
+    "i-modal": "../../../static/iView/modal/index",
+    "i-toast": "../../../static/iView/toast/index"
+  },
   "tabBar": {
-    "backgroundColor": "#ffffff",
     "list": [
       {
         "pagePath": "pages/index/main",
         "text": "书架",
-        "iconPath": "static/img/home.jpg",
-        "selectedIconPath": "static/img/homeSelect.jpg"
+        "iconPath": "static/img/home.png",
+        "selectedIconPath": "static/img/homefill.png"
       },
       {
         "pagePath": "pages/mine/main",
         "text": "我的",
-        "iconPath": "static/img/home.jpg",
-        "selectedIconPath": "static/img/homeSelect.jpg"
+        "iconPath": "static/img/mine.png",
+        "selectedIconPath": "static/img/minefill.png"
       }
     ]
   }

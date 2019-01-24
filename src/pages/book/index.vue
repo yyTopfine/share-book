@@ -28,14 +28,20 @@
     data () {
       return {
         bookDetail: {},
+        userInfo: {},
         bookId: ''
       }
     },
     onLoad (option) {
       let _this = this
       this.bookId = option.id
+      // 查询书籍详情
       store.state.db.collection('shareBook-books').doc(option.id).get().then(res => {
         _this.bookDetail = res.data
+      })
+      // 查询用户信息，用于记录书籍被借人信息
+      store.state.db.collection('shareBook-user').where({openId: store.state.openId}).get().then(res => {
+        _this.userInfo = res.data[0]
       })
     },
     methods: {
@@ -57,7 +63,8 @@
           } else {
             store.state.db.collection('shareBook-books').doc(_this.bookId).update({
               data: {
-                isBorrow: true
+                isBorrow: true,
+                borrower: _this.userInfo.nickName
               },
               success (res) {
                 $Toast({

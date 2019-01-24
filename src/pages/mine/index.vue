@@ -13,17 +13,18 @@ import store from '../store/store'
 export default {
   data () {
     return {
-      userInfo: {}
+      userInfo: {
+        nickName: '未登录'
+      }
     }
   },
-  created () {
+  mounted () {
     let _this = this
-    setTimeout(function () {
-      store.state.db.collection('shareBook-user').where({openId: store.state.openId}).get().then(res => {
-        console.log('sssss11', res.data)
+    store.state.db.collection('shareBook-user').where({openId: store.state.openId}).get().then(res => {
+      if (res.data.length !== 0) {
         _this.userInfo = res.data[0]
-      })
-    }, 1500)
+      }
+    }).catch(e => {})
   },
   components: {
   },

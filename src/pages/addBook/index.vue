@@ -48,7 +48,8 @@
             name: _this.bookName,
             author: _this.author,
             readReaction: _this.readReaction,
-            isBorrow: false
+            isBorrow: false,
+            borrower: ''
           }
         }).then(res => {
           $Toast({
