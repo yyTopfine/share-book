@@ -19,7 +19,26 @@
       }
     },
     props: ['visibleLogin'],
+    created () {
+      console.log('page index created', this)
+    },
+    onLoad () {
+      console.log('page index onLoad', this)
+    },
+    onReady () {
+      console.log('page index onReady', this)
+    },
+    onShow () {
+      console.log('onShow', this)
+    },
+    onUnload () {
+      console.log('onUnload', this)
+    },
+    onHide () {
+      console.log('onHide', this)
+    },
     mounted () {
+      console.log('sdfasdfa111')
       let _this = this
       // 未授权时弹授权提示框，反之直接显示注册登录按钮
       if (!_this.visibleLogin) {

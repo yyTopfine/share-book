@@ -8,7 +8,7 @@
         <i-icon type="add" size="28" class="homePgeContainer_content_bookItem--icon"/>
       </div>
     </div>
-    <Login @authorizeSuccess = 'authorizeSuccess' v-if="showLoginComponen" :visibleLogin = 'isAuthorize'></Login>
+    <Login :visibleLogin = 'visibleLogin'></Login>
   </div>
 </template>
 
