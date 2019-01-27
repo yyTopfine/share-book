@@ -3,8 +3,8 @@
     <i-modal title="登录确认" :visible="visibleLogin" @ok="loginOk" @cancel = "loginCancel" >
       <view>登录后即可添加图书</view>
     </i-modal>
-    <i-modal title="用户信息权限获取申请" :visible="askUserInfo" :show-ok=false @cancel = "askUserInfo = false" >
-      <button  open-type="getUserInfo" @click="authorOk" style="width: 80%;margin: 0 auto;background-color: lightblue">点我授权</button>
+    <i-modal title="用户信息权限获取申请" :visible="askUserInfo" :show-ok=false @cancel = "askUserInfoCancel" >
+      <button  open-type="getUserInfo" @click="authorOk" style="width: 80%;margin: 0 auto;background-color: #2d8cf0">点我授权</button>
     </i-modal>
     <i-toast id="toast" />
   </div>
@@ -19,26 +19,7 @@
       }
     },
     props: ['visibleLogin'],
-    created () {
-      console.log('page index created', this)
-    },
-    onLoad () {
-      console.log('page index onLoad', this)
-    },
-    onReady () {
-      console.log('page index onReady', this)
-    },
-    onShow () {
-      console.log('onShow', this)
-    },
-    onUnload () {
-      console.log('onUnload', this)
-    },
-    onHide () {
-      console.log('onHide', this)
-    },
     mounted () {
-      console.log('sdfasdfa111')
       let _this = this
       // 未授权时弹授权提示框，反之直接显示注册登录按钮
       if (!_this.visibleLogin) {
@@ -55,8 +36,13 @@
       }
     },
     methods: {
+      askUserInfoCancel () {
+        this.askUserInfo = false
+        this.$emit('loginComplete')
+      },
       authorOk () {
         this.askUserInfo = false
+        this.$emit('loginComplete')
       },
       loginCancel () {
         this.visibleLogin = false
@@ -70,8 +56,9 @@
       },
       loginOk () {
         this.visibleLogin = false
-        store.state.db.collection('shareBook-user').add({
-          // data 字段表示需新增的 JSON 数据
+        let _this = this
+        wx.cloud.callFunction({
+          name: 'login',
           data: {
             openId: store.state.openId,
             nickName: store.state.userInfo.nickName,
@@ -83,14 +70,25 @@
             type: 'success',
             selector: '#toast'
           })
+          _this.visibleLogin = false
+          setTimeout(function () {
+            _this.$emit('loginComplete')
+          }, 1500)
         }).catch(e => {
           $Toast({
             content: '登录失败',
             type: 'error',
             selector: '#toast'
           })
+          _this.visibleLogin = false
+          setTimeout(function () {
+            _this.$emit('loginComplete')
+          }, 1500)
         })
       }
     }
   }
 </script>
+<style>
+
+</style>

@@ -15,19 +15,22 @@
   "usingComponents": {
     "i-icon": "../../../static/iView/icon/index",
     "i-modal": "../../../static/iView/modal/index",
-    "i-toast": "../../../static/iView/toast/index"
+    "i-toast": "../../../static/iView/toast/index",
+    "i-spin": "../../../static/iView/spin/index"
   },
   "tabBar": {
     "list": [
       {
         "pagePath": "pages/index/main",
         "text": "书架",
+        "selectedColor": "#add8e6",
         "iconPath": "static/img/home.png",
         "selectedIconPath": "static/img/homefill.png"
       },
       {
         "pagePath": "pages/mine/main",
         "text": "我的",
+        "selectedColor": "#add8e6",
         "iconPath": "static/img/mine.png",
         "selectedIconPath": "static/img/minefill.png"
       }

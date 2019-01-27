@@ -1,8 +1,12 @@
 {
   "usingComponents": {
-    "i-cell-group": "../../../static/iView/cell-group/index",
+    "i-collapse": "../../../static/iView/collapse/index",
+    "i-collapse-item": "../../../static/iView/collapse-item/index",
+    "i-card": "../../../static/iView/card/index",
+    "i-swipeout": "../../../static/iView/swipeout/index",
     "i-cell": "../../../static/iView/cell/index",
-    "i-card": "../../../static/iView/card/index"
+    "i-toast": "../../../static/iView/toast/index",
+    "i-button": "../../../static/iView/button/index"
   },
   "navigationBarTitleText": "我的"
 }

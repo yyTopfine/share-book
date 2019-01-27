@@ -2,34 +2,54 @@
   <div class="bookContainer">
     <div class="bookContainer_content">
       <div class="bookContainer_content_info">
-        <img src="http://via.placeholder.com/70X80/add8e6/fff" class="bookContainer_content_info_icon">
+        <image src="../../static/img/bookImg.png" class="bookContainer_content_info_icon" />
         <div class="bookContainer_content_info_name">
-          <div class="bookContainer_content_info_name--book">{{bookDetail.name}}</div>
+          <div class="bookContainer_content_info_name--book">{{bookDetail.bookName}}</div>
           <div class="bookContainer_content_info_name--provider">作者：{{bookDetail.author}}</div>
         </div>
       </div>
       <i-sticky>
         <i-sticky-item i-class="i-sticky-demo-title">
-          <view slot="title">推荐理由</view>
+          <view slot="title">详细信息</view>
           <view slot="content">
-            <view class="i-sticky-demo-item" style="padding: 10px 20px">{{bookDetail.readReaction}}</view>
+            <view class="i-sticky-demo-item" style="padding: 10px 20px">书籍分类：{{bookDetail.bookType}}</view>
+            <view class="i-sticky-demo-item" style="padding: 10px 20px">提供者：{{bookDetail.provider}}</view>
+            <view class="i-sticky-demo-item" style="padding: 10px 20px">出版社：{{bookDetail.press}}</view>
+            <view class="i-sticky-demo-item" style="padding: 10px 20px">出版日期：{{bookDetail.pressDate}}</view>
           </view>
         </i-sticky-item>
       </i-sticky>
     </div>
     <i-button type="primary" @click="borrowBook">借阅</i-button>
     <i-toast id="bookDetailToast" />
+    <i-modal title="请选择借阅周期" :visible="borrowChoose" :actions="borrowAry"
+             action-mode="vertical" @click="borrowChooseClick"></i-modal>
+    <i-spin custom fix v-if="isShowLoding">
+      <i-icon type="refresh" size="20" i-class="icon-load"></i-icon>
+      <view>Loading</view>
+    </i-spin>
   </div>
 </template>
 <script>
   import store from '../store/store'
+  import {formatTime} from '../../utils/index'
   const { $Toast } = require('../../../static/iView/base/index')
   export default {
     data () {
       return {
         bookDetail: {},
         userInfo: {},
-        bookId: ''
+        bookId: '',
+        borrowChoose: false,
+        isShowLoding: false,
+        borrowDate: '',
+        borrowAry: [{
+          name: '一个月'
+        }, {
+          name: '两个月'
+        }, {
+          name: '三个月'
+        }]
       }
     },
     onLoad (option) {
@@ -45,9 +65,54 @@
       })
     },
     methods: {
+      borrowChooseClick (e) {
+        let _this = this
+        if (e.mp._relatedInfo.anchorTargetText === '一个月') {
+          _this.borrowDate = formatTime(new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 30))
+          console.log(_this.borrowDate)
+        } else if (e.mp._relatedInfo.anchorTargetText === '两个月') {
+          _this.borrowDate = formatTime(new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 30 * 2))
+        } else if (e.mp._relatedInfo.anchorTargetText === '三个月') {
+          _this.borrowDate = formatTime(new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 30 * 3))
+        }
+        if (_this.borrowDate) {
+          _this.borrowChoose = false
+          _this.isShowLoding = true
+          wx.cloud.callFunction({
+            name: 'borrowBook',
+            data: {
+              bookId: _this.bookId,
+              isBorrow: true,
+              borrower: store.state.openId,
+              borrowDate: _this.borrowDate
+            }
+          }).then(res => {
+            _this.isShowLoding = false
+            $Toast({
+              content: '借阅成功',
+              selector: '#bookDetailToast',
+              type: 'success'
+            })
+            _this.borrowDate = ''
+            setTimeout(function () {
+              wx.switchTab({
+                url: '../index/main'
+              })
+            }, 2000)
+          }).catch(e => {
+            _this.borrowDate = ''
+            _this.isShowLoding = false
+            $Toast({
+              content: '借阅失败',
+              selector: '#bookDetailToast',
+              type: 'success'
+            })
+          })
+        }
+      },
       borrowBook () {
         let _this = this
-        store.state.db.collection('shareBook-books').where({openId: store.state.openId}).get().then(res => {
+        store.state.db.collection('shareBook-books').where({openidVal: store.state.openId}).get().then(res => {
           if (!res.data.length) {
             $Toast({
               content: '捐赠过图书才可以借阅',
@@ -61,24 +126,7 @@
               type: 'warning'
             })
           } else {
-            store.state.db.collection('shareBook-books').doc(_this.bookId).update({
-              data: {
-                isBorrow: true,
-                borrower: _this.userInfo.nickName
-              },
-              success (res) {
-                $Toast({
-                  content: '借阅成功',
-                  selector: '#bookDetailToast',
-                  type: 'success'
-                })
-                setTimeout(function () {
-                  wx.switchTab({
-                    url: '../index/main'
-                  })
-                }, 2000)
-              }
-            })
+            _this.borrowChoose = true
           }
         })
       }

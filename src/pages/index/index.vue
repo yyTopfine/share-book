@@ -1,20 +1,22 @@
 <template>
   <div class="homePgeContainer">
     <div class="homePgeContainer_bookContainer">
-      <div class="homePgeContainer_content_bookItem homePgeContainer_content_bookItem--book" @click="goBookDetail(item._id)"
-           v-for="item in bookList" :key="id">{{item.name}}</div>
+      <div class="homePgeContainer_content_bookItem homePgeContainer_content_bookItem--book" @click="goBookDetail(item._id)" v-for="item in bookList" :key="id" style="position: relative">
+        <image src="../../static/img/bookImg.png" style="width: 100%;height: 100%;display: block"/>
+        <span style="position: absolute;top:2px;left: 5px;color: yellow">{{item.bookName}}</span>
+      </div>
       <div class="homePgeContainer_content_bookItem" @click="addBook">
         <button open-type="getUserInfo"/>
         <i-icon type="add" size="28" class="homePgeContainer_content_bookItem--icon"/>
       </div>
     </div>
-    <Login :visibleLogin = 'visibleLogin'></Login>
+    <login :visibleLogin = 'visibleLogin' v-if="showLoginComponen" @loginComplete="loginComplete"></login>
   </div>
 </template>
 
 <script>
 import store from '../store/store'
-import login from '../../components/login'
+import login from '@/components/login'
 export default {
   data () {
     return {
@@ -26,7 +28,6 @@ export default {
       hasRegister: false
     }
   },
-
   components: {
     login
   },
@@ -49,6 +50,9 @@ export default {
         url: '../book/main?id=' + id
       })
     },
+    loginComplete () {
+      this.showLoginComponen = false
+    },
     addBook () {
       let _this = this
       // 判断用户是否注册过，没注册过需要检测是否授权获取用户信息，供后续登录使用
@@ -61,11 +65,17 @@ export default {
               if (!res.authSetting['scope.userInfo']) { // 未授权
                 _this.visibleLogin = false
               } else { // 已授权（未注册即未登录）
+                wx.getUserInfo({
+                  success: (res) => {
+                    store.commit('setUserInfo', res.userInfo)
+                  }
+                })
                 _this.visibleLogin = true
               }
             }
           })
         } else { //  已注册（即登录）
+          store.commit('setUserInfo', res.data[0])
           wx.navigateTo({
             url: '../addBook/main'
           })
@@ -102,8 +112,7 @@ export default {
 
   .homePgeContainer_content_bookItem--book{
     box-sizing:border-box;
-    padding:10px 5px;
-    font-size:16px;
+    font-size:13px;
     font-weight:bolder;
   }
 
