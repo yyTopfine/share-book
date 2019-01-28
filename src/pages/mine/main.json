@@ -8,5 +8,5 @@
     "i-toast": "../../../static/iView/toast/index",
     "i-button": "../../../static/iView/button/index"
   },
-  "navigationBarTitleText": "我的"
+  "navigationBarTitleText": "个人中心"
 }

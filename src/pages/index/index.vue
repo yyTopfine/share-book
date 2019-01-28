@@ -1,5 +1,8 @@
 <template>
   <div class="homePgeContainer">
+    <i-notice-bar icon="systemprompt" loop v-if="showNotice">
+      您有图书将于近期到期，请及时至个人中心查看归还！
+    </i-notice-bar>
     <div class="homePgeContainer_bookContainer">
       <div class="homePgeContainer_content_bookItem homePgeContainer_content_bookItem--book" @click="goBookDetail(item._id)" v-for="item in bookList" :key="id" style="position: relative">
         <image src="../../static/img/bookImg.png" style="width: 100%;height: 100%;display: block"/>
@@ -25,26 +28,43 @@ export default {
       visibleLogin: false,
       askUserInfo: false,
       showLoginComponen: false,
-      hasRegister: false
+      hasRegister: false,
+      showNotice: false
     }
   },
   components: {
     login
   },
-  onShow () {
-    let _this = this
+  mounted () {
     // 调用云函数，返回用户openId，参数为云函数名称
     wx.cloud.callFunction({ name: 'getOpenId' }).then(res => {
       console.log('云函数返回', res)
       store.commit('setOpenId', res.result.openid)
+      this.checkIsShowNotice()
     })
+  },
+  onShow () {
+    let _this = this
     store.state.db.collection('shareBook-books').get().then(res => {
       // res.data 包含该记录的数据
       _this.bookList = res.data
     })
+    this.checkIsShowNotice()
   },
 
   methods: {
+    checkIsShowNotice () {
+      let _this = this
+      _this.showNotice = false
+      store.state.db.collection('shareBook-books').where({borrower: store.state.openId}).get().then(res => {
+        let borrowBook = res.data
+        for (let i = 0; i < borrowBook.length; i++) {
+          let time = new Date(borrowBook[i].borrowDate).getTime() - new Date().getTime()
+          borrowBook.borrowEnd = '归还剩余天数：' + parseInt(time / (1000 * 60 * 60 * 24)) + '天'
+          _this.showNotice = true
+        }
+      })
+    },
     goBookDetail (id) {
       wx.navigateTo({
         url: '../book/main?id=' + id
