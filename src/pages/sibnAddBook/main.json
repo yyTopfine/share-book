@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "i-button": "../../../static/iView/button/index",
+    "i-toast": "../../../static/iView/toast/index"
+  },
+  "navigationBarTitleText": "扫码"
+}

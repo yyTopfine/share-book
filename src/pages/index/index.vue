@@ -1,12 +1,14 @@
 <template>
   <div class="homePgeContainer">
     <i-notice-bar icon="systemprompt" loop v-if="showNotice">
-      您有图书将于近期到期，请及时至个人中心查看归还！
+      您有图书将于一周后到期，请注意按时归还！
     </i-notice-bar>
     <div class="homePgeContainer_bookContainer">
       <div class="homePgeContainer_content_bookItem homePgeContainer_content_bookItem--book" @click="goBookDetail(item._id)" v-for="item in bookList" :key="id" style="position: relative">
-        <image src="../../static/img/bookImg.png" style="width: 100%;height: 100%;display: block"/>
-        <span style="position: absolute;top:2px;left: 5px;color: yellow">{{item.bookName}}</span>
+        <image :src="item.bookFaceId" style="width: 100%;height: 100%;display: block"></image>
+        <span style="position: absolute;top:5px;left: 10px;color: yellow;right: 5px;font-size: 12px">{{item.bookName}}</span>
+        <image v-if="item.isBorrow" src="cloud://share-book-dff74a.7368-share-book-dff74a/borrowFlag.png" style="position: absolute;top:60px;width: 50px;height: 50px;display: block;left: 23px"/>
+        <span style="position: absolute;bottom:5px;color: yellow;right: 10px;font-size: 8px">{{item.provider}}</span>
       </div>
       <div class="homePgeContainer_content_bookItem" @click="addBook">
         <button open-type="getUserInfo"/>
@@ -61,7 +63,9 @@ export default {
         for (let i = 0; i < borrowBook.length; i++) {
           let time = new Date(borrowBook[i].borrowDate).getTime() - new Date().getTime()
           borrowBook.borrowEnd = '归还剩余天数：' + parseInt(time / (1000 * 60 * 60 * 24)) + '天'
-          _this.showNotice = true
+          if (parseInt(time / (1000 * 60 * 60 * 24)) <= 7) {
+            _this.showNotice = true
+          }
         }
       })
     },
@@ -97,7 +101,7 @@ export default {
         } else { //  已注册（即登录）
           store.commit('setUserInfo', res.data[0])
           wx.navigateTo({
-            url: '../addBook/main'
+            url: '../sibnAddBook/main'
           })
         }
       })

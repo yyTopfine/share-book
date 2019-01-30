@@ -9,6 +9,7 @@ const store = new Vuex.Store({
   state: {
     openId: '',
     userInfo: {},
+    bookInfo: null,
     db: wx.cloud.database()
   },
   mutations: {
@@ -19,6 +20,10 @@ const store = new Vuex.Store({
     setUserInfo: (state, Obj) => {
       const obj = state
       obj.userInfo = Obj
+    },
+    setBookInfo: (state, Obj) => {
+      const obj = state
+      obj.bookInfo = Obj
     }
   }
 })

@@ -2,7 +2,7 @@
   <div class="bookContainer">
     <div class="bookContainer_content">
       <div class="bookContainer_content_info">
-        <image src="../../static/img/bookImg.png" class="bookContainer_content_info_icon" />
+        <image :src="bookDetail.bookFaceId" class="bookContainer_content_info_icon" />
         <div class="bookContainer_content_info_name">
           <div class="bookContainer_content_info_name--book">{{bookDetail.bookName}}</div>
           <div class="bookContainer_content_info_name--provider">作者：{{bookDetail.author}}</div>
@@ -10,17 +10,19 @@
       </div>
       <i-sticky>
         <i-sticky-item i-class="i-sticky-demo-title">
-          <view slot="title">详细信息</view>
+          <view slot="title" style="font-size: 18px;font-weight: bolder">详细信息</view>
           <view slot="content">
-            <view class="i-sticky-demo-item" style="padding: 10px 20px">书籍分类：{{bookDetail.bookType}}</view>
-            <view class="i-sticky-demo-item" style="padding: 10px 20px">提供者：{{bookDetail.provider}}</view>
-            <view class="i-sticky-demo-item" style="padding: 10px 20px">出版社：{{bookDetail.press}}</view>
-            <view class="i-sticky-demo-item" style="padding: 10px 20px">出版日期：{{bookDetail.pressDate}}</view>
+            <view class="i-sticky-demo-item" style="padding: 10px 20px;font-size: 16px">提供者：{{bookDetail.provider}}</view>
+            <view class="i-sticky-demo-item" style="padding: 10px 20px;font-size: 16px">出版社：{{bookDetail.press}}</view>
+            <view class="i-sticky-demo-item" style="padding: 10px 20px;font-size: 16px">出版日期：{{bookDetail.pressDate}}</view>
+            <view class="i-sticky-demo-item" style="padding: 10px 20px;font-size: 16px">价格：{{bookDetail.price}}元</view>
+            <view class="i-sticky-demo-item" style="padding: 10px 20px;font-size: 16px" v-if="bookDetail.isBorrow">到期时间：{{bookDetail.borrowDate}}</view>
           </view>
         </i-sticky-item>
       </i-sticky>
     </div>
-    <i-button type="primary" @click="borrowBook">借阅</i-button>
+    <i-button type="primary" @click="borrowBook" v-if="!bookDetail.isBorrow">借阅</i-button>
+    <i-button type="primary" v-if="bookDetail.isBorrow" disabled>已借阅</i-button>
     <i-toast id="bookDetailToast" />
     <i-modal title="请选择借阅周期" :visible="borrowChoose" :actions="borrowAry"
              action-mode="vertical" @click="borrowChooseClick"></i-modal>

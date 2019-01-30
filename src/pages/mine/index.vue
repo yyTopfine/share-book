@@ -8,7 +8,10 @@
         <view slot="content" v-if="providerBook.length">
           <i-cell v-for="item in providerBook" :key="_id" i-class="i-cell-padding" :title="item.bookName" :label="item.press"></i-cell>
         </view>
-        <view slot="content" v-if="!providerBook.length">暂无提供图书信息</view>
+        <view slot="content" v-if="!providerBook.length">
+          <image style="display: block;width: 80%;margin-left: 10%;height: 100px" src="cloud://share-book-dff74a.7368-share-book-dff74a/404img.png"></image>
+          <div style="font-size: 12px;color: #ccc;text-align: center;line-height: 20px">还没有提供过图书，欢迎去书架添加</div>
+        </view>
       </i-collapse-item>
       <i-collapse-item title="我借阅的图书" name="name2" i-class="collapseSelf">
         <view slot="content" v-if="borrowBook.length">
@@ -23,7 +26,10 @@
             </view>
           </i-swipeout>
         </view>
-        <view slot="content" v-if="!borrowBook.length">没有需要归还的图书</view>
+        <view slot="content" v-if="!borrowBook.length">
+          <image style="display: block;width: 80%;margin-left: 10%;height: 100px" src="cloud://share-book-dff74a.7368-share-book-dff74a/404img.png"></image>
+          <div style="font-size: 12px;color: #ccc;text-align: center;line-height: 20px">没有借阅图书，欢迎浏览书架借阅</div>
+        </view>
       </i-collapse-item>
     </i-collapse>
     <i-modal title="归还确认" :visible="borrowConfirm" @ok="returnBook" @cancel = "borrowConfirm = false" >
@@ -157,7 +163,7 @@ export default {
 }
 </script>
 
-<style>
+<style >
   i-cell >view{
     border: 1px solid #ccc;
   }
@@ -188,5 +194,10 @@ export default {
   .collapseSelf{
     border: 0px!important;
     padding: 12px 8px!important;
+  }
+
+  .i-collapse-item-title{
+    font-size: 13px!important;
+    font-weight: bolder!important;
   }
 </style>

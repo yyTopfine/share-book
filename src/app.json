@@ -4,7 +4,8 @@
     "pages/logs/main",
     "pages/mine/main",
     "pages/book/main",
-    "pages/addBook/main"
+    "pages/addBook/main",
+    "pages/sibnAddBook/main"
   ],
   "window": {
     "backgroundTextStyle": "light",
