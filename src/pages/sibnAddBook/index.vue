@@ -1,7 +1,7 @@
 <template>
-  <div class="isdnContainer">
+  <div class="isdnContainer" style="height: 100%;overflow: hidden">
     <image class="isdnContainer_isbnImage" src="cloud://share-book-dff74a.7368-share-book-dff74a/isbn.png" @click="addBook" />
-    <div class="isdnContainer_text">点图标扫码获取书籍信息</div>
+    <div class="isdnContainer_text">扫描书籍背面ISBN码添加</div>
     <i-button @click="addNotAuto" type="primary" style="width: 70%;margin: 0 auto;display: block">无法扫码,手动添加</i-button>
     <i-toast id="isbnAdd" />
     <i-spin custom fix v-if="isShowLoding">

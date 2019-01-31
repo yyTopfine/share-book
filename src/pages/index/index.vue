@@ -6,9 +6,9 @@
     <div class="homePgeContainer_bookContainer">
       <div class="homePgeContainer_content_bookItem homePgeContainer_content_bookItem--book" @click="goBookDetail(item._id)" v-for="item in bookList" :key="id" style="position: relative">
         <image :src="item.bookFaceId" style="width: 100%;height: 100%;display: block"></image>
-        <span style="position: absolute;top:5px;left: 10px;color: yellow;right: 5px;font-size: 12px">{{item.bookName}}</span>
+        <span v-if="item.isManual" style="position: absolute;top:5px;left: 10px;color: yellow;right: 5px;font-size: 12px">{{item.bookName}}</span>
         <image v-if="item.isBorrow" src="cloud://share-book-dff74a.7368-share-book-dff74a/borrowFlag.png" style="position: absolute;top:60px;width: 50px;height: 50px;display: block;left: 23px"/>
-        <span style="position: absolute;bottom:5px;color: yellow;right: 10px;font-size: 8px">{{item.provider}}</span>
+        <!--<span style="position: absolute;bottom:5px;color: yellow;right: 10px;font-size: 8px">{{item.provider}}</span>-->
       </div>
       <div class="homePgeContainer_content_bookItem" @click="addBook">
         <button open-type="getUserInfo"/>

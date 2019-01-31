@@ -6,7 +6,16 @@
     <i-collapse>
       <i-collapse-item title="我提供的图书" name="name1" i-class="collapseSelf">
         <view slot="content" v-if="providerBook.length">
-          <i-cell v-for="item in providerBook" :key="_id" i-class="i-cell-padding" :title="item.bookName" :label="item.press"></i-cell>
+
+          <i-swipeout  i-class="i-swipeout-demo-item" :actions="actions1"
+                       v-for="item in providerBook" :key="_id" @change="returnConfirm(item._id,false,$event)">
+            <view slot="content" style="padding: 0px">
+              <i-cell i-class="i-cell-padding" :title="item.bookName" :label="item.press">
+              </i-cell>
+            </view>
+          </i-swipeout>
+
+          <!--<i-cell v-for="item in providerBook" :key="_id" i-class="i-cell-padding" :title="item.bookName" :label="item.press"></i-cell>-->
         </view>
         <view slot="content" v-if="!providerBook.length">
           <image style="display: block;width: 80%;margin-left: 10%;height: 100px" src="cloud://share-book-dff74a.7368-share-book-dff74a/404img.png"></image>
@@ -16,7 +25,7 @@
       <i-collapse-item title="我借阅的图书" name="name2" i-class="collapseSelf">
         <view slot="content" v-if="borrowBook.length">
           <i-swipeout  i-class="i-swipeout-demo-item" :actions="actions"
-                       v-for="item in borrowBook" :key="_id" @change="returnConfirm(item._id,$event)">
+                       v-for="item in borrowBook" :key="_id" @change="returnConfirm(item._id,true,$event)">
             <view slot="content" style="padding: 0px">
               <i-cell
                 i-class="i-cell-padding"
@@ -32,8 +41,8 @@
         </view>
       </i-collapse-item>
     </i-collapse>
-    <i-modal title="归还确认" :visible="borrowConfirm" @ok="returnBook" @cancel = "borrowConfirm = false" >
-      <view>确认已将图书归还至骏梦图书馆</view>
+    <i-modal :title="modalTitle" :visible="borrowConfirm" @ok="returnBook" @cancel = "borrowConfirm = false" >
+      <view>{{modalContent}}</view>
     </i-modal>
     <i-toast id="returnBookToast" />
     <login :visibleLogin = 'visibleLogin' v-if="showLoginComponen" @loginComplete="loginComplete"></login>
@@ -59,6 +68,14 @@ export default {
           background: '#ed3f14'
         }
       ],
+      actions1: [
+        {
+          name: '回收',
+          color: '#fff',
+          width: 100,
+          background: '#ed3f14'
+        }
+      ],
       borrowConfirm: false,
       toggle: true,
       isShowLoding: false,
@@ -67,6 +84,9 @@ export default {
       bookId: '',
       showLoginComponen: false,
       visibleLogin: false,
+      isReturn: true,
+      modalTitle: '归还确认',
+      modalContent: '确认已将图书归还至骏梦图书馆',
       userInfo: {
         nickName: ''
       }
@@ -126,21 +146,27 @@ export default {
       this.borrowConfirm = false
       _this.isShowLoding = true
       wx.cloud.callFunction({
-        name: 'returnBook',
+        name: _this.isReturn ? 'returnBook' : 'recyclBook',
         data: {
           bookId: _this.bookId
         }
       }).then(res => {
         _this.isShowLoding = false
-        store.state.db.collection('shareBook-books').where({borrower: store.state.openId}).get().then(res => {
-          _this.borrowBook = res.data
-          for (let i = 0; i < _this.borrowBook.length; i++) {
-            let time = new Date(_this.borrowBook[i].borrowDate).getTime() - new Date().getTime()
-            _this.borrowBook[i].borrowEnd = '归还剩余天数：' + parseInt(time / (1000 * 60 * 60 * 24)) + '天'
-          }
-        })
+        if (_this.isReturn) {
+          store.state.db.collection('shareBook-books').where({borrower: store.state.openId}).get().then(res => {
+            _this.borrowBook = res.data
+            for (let i = 0; i < _this.borrowBook.length; i++) {
+              let time = new Date(_this.borrowBook[i].borrowDate).getTime() - new Date().getTime()
+              _this.borrowBook[i].borrowEnd = '归还剩余天数：' + parseInt(time / (1000 * 60 * 60 * 24)) + '天'
+            }
+          })
+        } else {
+          store.state.db.collection('shareBook-books').where({openidVal: store.state.openId}).get().then(res => {
+            _this.providerBook = res.data
+          })
+        }
         $Toast({
-          content: '归还成功',
+          content: _this.isReturn ? '归还成功' : '回收成功',
           selector: '#returnBookToast',
           type: 'success'
         })
@@ -148,16 +174,19 @@ export default {
         _this.borrowDate = ''
         _this.isShowLoding = false
         $Toast({
-          content: '归还失败',
+          content: _this.isReturn ? '归还失败' : '回收失败',
           selector: '#returnBookToast',
           type: 'success'
         })
       })
       this.bookId = ''
     },
-    returnConfirm (id, e) {
+    returnConfirm (id, flag, e) {
       this.borrowConfirm = true
       this.bookId = id
+      this.isReturn = flag
+      this.modalTitle = flag ? '归还确认' : '回收确认'
+      this.modalContent = flag ? '确认已将图书归还至骏梦图书馆' : '确认已将图书从骏梦图书馆收回'
     }
   }
 }
@@ -170,10 +199,16 @@ export default {
 
   .i-swipeout-demo-item > view{
     padding: 0px!important;
-    border-top:1px solid #ccc!important;
-    border-left:1px solid #ccc!important;
-    border-right:1px solid #ccc!important;
+    border-top:0px solid #ccc!important;
+    border-left:0px solid #ccc!important;
+    border-right:0px solid #ccc!important;
+    margin-bottom: 5px!important;
   }
+
+  .i-swipeout-demo-item{
+    border: 0px!important;
+  }
+
   .mineContainer{
     height: 100%;
   }

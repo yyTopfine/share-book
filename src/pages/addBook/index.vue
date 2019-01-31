@@ -43,7 +43,9 @@
           bookType: '',
           bookLabel: '',
           bookFaceId: '',
-          bookFaceUrl: ''
+          bookFaceUrl: '',
+          summary: '',
+          isManual: true
         },
         isShowLoding: false,
         imageCouldUrl: 'cloud://share-book-dff74a.7368-share-book-dff74a/'
@@ -58,8 +60,10 @@
         price: '',
         bookType: '',
         bookLabel: '',
-        bookFaceId: 'cloud://share-book-dff74a.7368-share-book-dff74a/bookFace1.png',
-        bookFaceUrl: 'https://7368-share-book-dff74a-1258538911.tcb.qcloud.la/bookFace1.png?sign=8f6ceda593ee4cca6ffa50064885e851&t=1548746722'
+        bookFaceId: '',
+        bookFaceUrl: '',
+        summary: '',
+        isManual: true
       }
     },
     methods: {
@@ -79,7 +83,7 @@
       addBook () {
         let _this = this
         for (let key in _this.bookInfo) {
-          if (!_this.bookInfo[ key ] && key !== 'bookType' && key !== 'bookLabel' && key !== 'bookFaceId') {
+          if (!_this.bookInfo[ key ] && key !== 'bookType' && key !== 'bookLabel' && key !== 'bookFaceId' && key !== 'summary' && key !== 'isManual') {
             console.log('xxx', key)
             $Toast({
               content: '表单中有未填项，请填写后提交',
@@ -104,7 +108,9 @@
             openidVal: store.state.openId,
             borrower: '',
             borrowerDate: '',
-            bookFaceId: _this.bookInfo.bookFaceUrl
+            bookFaceId: _this.bookInfo.bookFaceUrl,
+            summary: _this.bookInfo.summary,
+            isManual: _this.bookInfo.isManual
           }
         }).then(res => {
           _this.isShowLoding = false
@@ -124,12 +130,14 @@
     },
     mounted () {
       if (store.state.bookInfo) {
-        this.bookInfo.bookName = store.state.bookInfo.showapi_res_body.data.title
-        this.bookInfo.author = store.state.bookInfo.showapi_res_body.data.author
-        this.bookInfo.pressDate = store.state.bookInfo.showapi_res_body.data.pubdate
-        this.bookInfo.press = store.state.bookInfo.showapi_res_body.data.publisher
-        this.bookInfo.price = store.state.bookInfo.showapi_res_body.data.price
-        this.bookInfo.bookFaceUrl = store.state.bookInfo.showapi_res_body.data.img
+        this.bookInfo.bookName = store.state.bookInfo.result.title
+        this.bookInfo.author = store.state.bookInfo.result.author
+        this.bookInfo.isManual = false
+        this.bookInfo.summary = store.state.bookInfo.result.summary
+        this.bookInfo.pressDate = store.state.bookInfo.result.pubdate
+        this.bookInfo.press = store.state.bookInfo.result.publisher
+        this.bookInfo.price = store.state.bookInfo.result.price
+        this.bookInfo.bookFaceUrl = store.state.bookInfo.result.images_large
       }
     }
   }
