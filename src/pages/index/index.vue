@@ -63,7 +63,7 @@ export default {
         for (let i = 0; i < borrowBook.length; i++) {
           let time = new Date(borrowBook[i].borrowDate).getTime() - new Date().getTime()
           borrowBook.borrowEnd = '归还剩余天数：' + parseInt(time / (1000 * 60 * 60 * 24)) + '天'
-          if (parseInt(time / (1000 * 60 * 60 * 24)) <= 7) {
+          if (parseInt(time / (1000 * 60 * 60 * 24)) <= 2) {
             _this.showNotice = true
           }
         }
@@ -128,7 +128,7 @@ export default {
 
   .homePgeContainer_content_bookItem{
     width: 26%;
-    height: 26%;
+    height: 150px;
     margin-top: 5.5%;
     background-color: gainsboro;
     margin-left: 5.5%;

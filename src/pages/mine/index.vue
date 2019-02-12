@@ -8,14 +8,12 @@
         <view slot="content" v-if="providerBook.length">
 
           <i-swipeout  i-class="i-swipeout-demo-item" :actions="actions1"
-                       v-for="item in providerBook" :key="_id" @change="returnConfirm(item._id,false,$event)">
+                       v-for="item in providerBook" :key="_id" @change="returnConfirm(item,false,$event)">
             <view slot="content" style="padding: 0px">
               <i-cell i-class="i-cell-padding" :title="item.bookName" :label="item.press">
               </i-cell>
             </view>
           </i-swipeout>
-
-          <!--<i-cell v-for="item in providerBook" :key="_id" i-class="i-cell-padding" :title="item.bookName" :label="item.press"></i-cell>-->
         </view>
         <view slot="content" v-if="!providerBook.length">
           <image style="display: block;width: 80%;margin-left: 10%;height: 100px" src="cloud://share-book-dff74a.7368-share-book-dff74a/404img.png"></image>
@@ -25,7 +23,7 @@
       <i-collapse-item title="我借阅的图书" name="name2" i-class="collapseSelf">
         <view slot="content" v-if="borrowBook.length">
           <i-swipeout  i-class="i-swipeout-demo-item" :actions="actions"
-                       v-for="item in borrowBook" :key="_id" @change="returnConfirm(item._id,true,$event)">
+                       v-for="item in borrowBook" :key="_id" @change="returnConfirm(item,true,$event)">
             <view slot="content" style="padding: 0px">
               <i-cell
                 i-class="i-cell-padding"
@@ -87,6 +85,7 @@ export default {
       isReturn: true,
       modalTitle: '归还确认',
       modalContent: '确认已将图书归还至骏梦图书馆',
+      bookIsBorrow: false,
       userInfo: {
         nickName: ''
       }
@@ -144,6 +143,14 @@ export default {
     returnBook () {
       let _this = this
       this.borrowConfirm = false
+      if (!_this.isReturn && this.bookIsBorrow) {
+        $Toast({
+          content: '借阅中的图书无法回收',
+          selector: '#returnBookToast',
+          type: 'success'
+        })
+        return
+      }
       _this.isShowLoding = true
       wx.cloud.callFunction({
         name: _this.isReturn ? 'returnBook' : 'recyclBook',
@@ -181,9 +188,10 @@ export default {
       })
       this.bookId = ''
     },
-    returnConfirm (id, flag, e) {
+    returnConfirm (itemObj, flag, e) {
       this.borrowConfirm = true
-      this.bookId = id
+      this.bookId = itemObj._id
+      this.bookIsBorrow = itemObj.isBorrow
       this.isReturn = flag
       this.modalTitle = flag ? '归还确认' : '回收确认'
       this.modalContent = flag ? '确认已将图书归还至骏梦图书馆' : '确认已将图书从骏梦图书馆收回'

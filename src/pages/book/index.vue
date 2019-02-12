@@ -50,11 +50,11 @@
         isShowLoding: false,
         borrowDate: '',
         borrowAry: [{
-          name: '一个月'
+          name: '一周'
         }, {
-          name: '两个月'
+          name: '两周'
         }, {
-          name: '三个月'
+          name: '四周'
         }]
       }
     },
@@ -77,13 +77,13 @@
     methods: {
       borrowChooseClick (e) {
         let _this = this
-        if (e.mp._relatedInfo.anchorTargetText === '一个月') {
-          _this.borrowDate = formatTime(new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 30))
+        if (e.mp._relatedInfo.anchorTargetText === '一周') {
+          _this.borrowDate = formatTime(new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 7))
           console.log(_this.borrowDate)
-        } else if (e.mp._relatedInfo.anchorTargetText === '两个月') {
-          _this.borrowDate = formatTime(new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 30 * 2))
-        } else if (e.mp._relatedInfo.anchorTargetText === '三个月') {
-          _this.borrowDate = formatTime(new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 30 * 3))
+        } else if (e.mp._relatedInfo.anchorTargetText === '两周') {
+          _this.borrowDate = formatTime(new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 7 * 2))
+        } else if (e.mp._relatedInfo.anchorTargetText === '四周') {
+          _this.borrowDate = formatTime(new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 7 * 4))
         }
         if (_this.borrowDate) {
           _this.borrowChoose = false
