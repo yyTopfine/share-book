@@ -130,14 +130,22 @@
     },
     mounted () {
       if (store.state.bookInfo) {
-        this.bookInfo.bookName = store.state.bookInfo.result.title
+        this.bookInfo.bookName = store.state.bookInfo.showapi_res_body.data.title
+        this.bookInfo.author = store.state.bookInfo.showapi_res_body.data.author
+        this.bookInfo.isManual = false
+        this.bookInfo.summary = store.state.bookInfo.showapi_res_body.data.gist
+        this.bookInfo.pressDate = store.state.bookInfo.showapi_res_body.data.pubdate
+        this.bookInfo.press = store.state.bookInfo.showapi_res_body.data.publisher
+        this.bookInfo.price = store.state.bookInfo.showapi_res_body.data.price
+        this.bookInfo.bookFaceUrl = store.state.bookInfo.showapi_res_body.data.img
+        /* this.bookInfo.bookName = store.state.bookInfo.result.title
         this.bookInfo.author = store.state.bookInfo.result.author
         this.bookInfo.isManual = false
         this.bookInfo.summary = store.state.bookInfo.result.summary
         this.bookInfo.pressDate = store.state.bookInfo.result.pubdate
         this.bookInfo.press = store.state.bookInfo.result.publisher
         this.bookInfo.price = store.state.bookInfo.result.price
-        this.bookInfo.bookFaceUrl = store.state.bookInfo.result.images_large
+        this.bookInfo.bookFaceUrl = store.state.bookInfo.result.images_large */
       }
     }
   }

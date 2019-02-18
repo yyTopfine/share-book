@@ -16,6 +16,10 @@
       </div>
     </div>
     <login :visibleLogin = 'visibleLogin' v-if="showLoginComponen" @loginComplete="loginComplete"></login>
+    <i-spin custom fix v-if="isShowLoding">
+      <i-icon type="refresh" size="20" i-class="icon-load"></i-icon>
+      <view>Loading</view>
+    </i-spin>
   </div>
 </template>
 
@@ -31,7 +35,8 @@ export default {
       askUserInfo: false,
       showLoginComponen: false,
       hasRegister: false,
-      showNotice: false
+      showNotice: false,
+      isShowLoding: false
     }
   },
   components: {
@@ -46,15 +51,33 @@ export default {
     })
   },
   onShow () {
-    let _this = this
-    store.state.db.collection('shareBook-books').get().then(res => {
+    this.isShowLoding = true
+    this.getBookList()
+    /* store.state.db.collection('shareBook-books').get().then(res => {
       // res.data 包含该记录的数据
+      console.log('ssss11', res)
       _this.bookList = res.data
-    })
+    }) */
     this.checkIsShowNotice()
   },
 
   methods: {
+    async getBookList () {
+      const countResult = await store.state.db.collection('shareBook-books').count()
+      const total = countResult.total
+      const batchTimes = Math.ceil(total / 20)
+      let _this = this
+      _this.bookList.splice(0, _this.bookList.length)
+      for (let i = 0; i < batchTimes; i++) {
+        store.state.db.collection('shareBook-books').skip(i * 20).limit(20).get().then(res => {
+          // res.data 包含该记录的数据
+          _this.bookList = _this.bookList.concat(res.data)
+          if (i === batchTimes - 1) {
+            _this.isShowLoding = false
+          }
+        })
+      }
+    },
     checkIsShowNotice () {
       let _this = this
       _this.showNotice = false
